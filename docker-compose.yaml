@@ -1,0 +1,31 @@
+version: '3.2'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${AMQP_USR}
+      RABBITMQ_DEFAULT_PASS: ${AMQP_PWD}
+      RABBITMQ_DEFAULT_VHOST: '/'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    restart: on-failure
+
+  server:
+    build: .
+    depends_on:
+      - rabbitmq
+    env_file:
+      - .env
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - .:/usr/app
+    command: npm run dev
+    restart: on-failure

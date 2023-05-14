@@ -1,0 +1,23 @@
+POST http://localhost:3000/messages/consume HTTP/1.1
+    ?queue=todos
+Accept: application/json
+
+###
+
+POST http://localhost:3000/messages/publish HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "exchange": "todo-xch",
+    "routingKey": "some-key",
+    "message": {
+        "operation": "insert",
+        "data": {
+            "name": "John Doe",
+            "email": "random@mail.edu"
+        }
+    }
+}
+
+## reuqires "REST Client" vscode extension
